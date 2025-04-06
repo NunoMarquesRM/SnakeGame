@@ -6,6 +6,7 @@ including movement, growth, and direction changes.
 """
 
 from turtle import Turtle
+import random
 
 # Game constants
 # Initial snake segment positions
@@ -16,6 +17,10 @@ UP = 90
 DOWN = 270
 LEFT = 180
 RIGHT = 0
+
+# Snake colors
+HEAD_COLOR = "green"
+BODY_COLORS = ["light green", "yellow", "orange", "red"]
 
 class Snake:
     """
@@ -30,6 +35,7 @@ class Snake:
         self.segments = []
         self.create_snake()
         self.head = self.segments[0]
+        self.head.color(HEAD_COLOR)  # Make the head a different color
 
     def create_snake(self):
         """Create the initial snake body with three segments."""
@@ -44,7 +50,8 @@ class Snake:
             position (tuple): The (x, y) coordinates for the new segment
         """
         new_segment = Turtle("square")
-        new_segment.color("white")
+        # Assign a random color from the body colors
+        new_segment.color(random.choice(BODY_COLORS))
         new_segment.penup()
         new_segment.goto(position)
         self.segments.append(new_segment)
@@ -85,3 +92,19 @@ class Snake:
         """Turn the snake right if it's not moving left."""
         if self.head.heading() != LEFT:
             self.head.setheading(RIGHT)
+            
+    def reset(self):
+        """
+        Reset the snake to its starting position and size.
+        
+        This is called when the player loses a life but still has lives remaining.
+        """
+        # Clear all segments
+        for segment in self.segments:
+            segment.goto(1000, 1000)  # Move segments off-screen
+        self.segments.clear()
+        
+        # Recreate the snake
+        self.create_snake()
+        self.head = self.segments[0]
+        self.head.color(HEAD_COLOR)  # Make the head a different color
